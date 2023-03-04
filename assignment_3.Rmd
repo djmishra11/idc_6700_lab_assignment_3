@@ -1,0 +1,171 @@
+---
+title: "Homework_3"
+author: "Dhananjay"
+date: "2023-02-28"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Q1. Get the Feed Grains dataset
+  * You will find the dataset here: FeedGrains.csv
+  * The first two lines are comments, starting with the '#' character
+  * The file has a header and is comma separated
+  
+```{r}
+# Loading the required libraries
+library(tidyverse)
+
+# Reading the dataset
+feedGrainsData <- read.csv("FeedGrains.csv", header = TRUE, sep = ',', skip = 3)
+head(feedGrainsData)
+summary(feedGrainsData)
+
+```
+
+
+## Q2. Get the subset of the data corresponding with only annual AND only seed use data (just one dataset, not two)
+  * Use the field SC_Frequency_Desc to find the records associated with annual observations
+  * Use the field SC_Attribute_Desc to find the records associated with seed use observations
+  * Hint:  the filter() function from dplyr might be useful
+
+
+```{r}
+# Loading the required libraries
+library(tidyverse)
+
+# Reading the dataset 
+feedGrainsData <- read.csv("FeedGrains.csv", header = TRUE, sep = ',', skip = 3)
+
+# Creating the subset of data corresponding with only annual AND only seed use observations using filter
+
+annualSeedUseSubsettedData <- filter(feedGrainsData, SC_Frequency_Desc == "Annual" & SC_Attribute_Desc == "Seed use" )
+
+head(annualSeedUseSubsettedData)
+
+```
+
+
+## Q3. Use the subsetted annual seed use data to produce a scatterplot of the year by amount seeded, colored by commodity type
+  * Use the field Year_ID for the year and make sure it is on the x-axis
+  * Use the field Amount for the amount and it is on the y-axis
+  * Use the SC_Commodity_Desc for the commodity type
+  * Make sure all plot labels are clear and visible
+  
+```{r}
+# Loading the required libraries
+library(tidyverse)
+library(ggplot2)
+
+# Reading the dataset 
+
+feedGrainsData <- read.csv("FeedGrains.csv", header = TRUE, sep = ',', skip = 3)
+
+# Creating the subset of data corresponding with only annual AND only seed use observations using filter
+
+annualSeedUseSubsettedData <- filter(feedGrainsData, SC_Frequency_Desc == "Annual" & SC_Attribute_Desc == "Seed use" )
+
+# Plotting the subsetted annual seed use data using the scatterplot of year by amount seeded, colored by commodity type
+
+ggplot(annualSeedUseSubsettedData, aes(x = Year_ID, y = Amount, group = SC_Commodity_Desc)) +
+  geom_point(aes(color = SC_Commodity_Desc)) +
+  scale_color_manual(values = c("Red", "White", "Green", "Black", "Blue")) +
+  labs(title = "Amount Seeded for Various Commodities by Year",
+       x = "Year",
+       y = "Amount Seeded",
+       color = "Commodity Description")
+
+
+```
+  
+## Q4. Examine the built-in R dataset, Orange
+  * Look at the collection of built-in datasets (hint: ?data)
+  * Consider the Orange data set in particular (hint: ?Orange)
+  * Describe the mode() and class() of all variables in the data set (hint: ?Orange)
+
+```{r}
+# Looking into the collection of built-in R datasets
+?data
+
+# List out all the available built-in R datasets 
+# data() 
+
+# Looking into the Orange dataset
+?Orange
+#data(Orange)
+print(Orange)
+
+# Describing the mode of all variables in the dataset
+mode(Orange$Tree)     
+mode(Orange$age)
+mode(Orange$circumference)
+
+# Describing the class of all variables in the dataset
+class(Orange$Tree)
+class(Orange$age)
+class(Orange$circumference)
+```
+
+
+## Q5. Plot and analyze the Orange data set
+  * Produce one grouped bar plot, where the age and the specific tree number is on the x-axis, while the circumference is on the y-axis -- group by age
+  
+```{r}
+# Loading the required libraries
+library(tidyverse)
+library(ggplot2)
+library(RColorBrewer)
+
+# Converting the Tree and age variable to factor
+Orange$Tree <- factor(Orange$Tree, levels = unique(Orange$Tree))
+Orange$age <- factor(Orange$age)
+
+# Creating a grouped bar plot with age and tree no. on X-axis and circumference on Y-axis
+# Grouped by age
+
+ggplot(Orange, aes(x = Tree, y = circumference, fill = age)) +
+  geom_bar(stat = "identity", position = "dodge", color="black") +
+  scale_fill_brewer(palette = "Set2") +
+  labs(title = "Growth of Orange Trees by Age",
+       x = "Tree Number",
+       y = "Circumference (mm)",
+       fill = "Age of the Tree")
+
+
+```
+
+  * Produce one grouped bar plot, where the age and the specific tree number is on the x-axis, while the circumference is on the y-axis -- group by tree ID number
+  
+```{r}
+# Loading the required libraries
+library(tidyverse)
+library(ggplot2)
+
+# Converting the Tree and age variable to factor
+Orange$Tree <- factor(Orange$Tree, levels = unique(Orange$Tree))
+Orange$age <- factor(Orange$age)
+
+# Creating a grouped bar plot with age and tree no. on X-axis and circumference on Y-axis
+# Grouped by tree ID number
+
+ggplot(Orange, aes(x = age, y = circumference, fill = Tree)) +
+  geom_bar(stat = "identity", position = "dodge", color="black") +
+  labs(title = "Growth of Orange Trees by Age",
+       x = "Age of the Tree",
+       y = "Circumference (mm)",
+       fill = "Tree Number") 
+  
+
+
+```
+
+
+  * Make sure all plot labels are clear and visible, in both plots
+  * If you have trouble because something is being treated as a number that you want treated as a factor, recall that you can use the factor() function to convert
+  * Suppose you are interested in comparing across ages for a specific tree primarily, and only secondarily across different trees.  Which plot would you prefer?
+
+Answer: The first bar plot is more preferable over the second one, if we are interested in comparing across ages for a specific tree. In the first bar plot, the generated bars are grouped by age which provides users a convenient way to compare the circumference of a specific tree at various ages. 
+
+
